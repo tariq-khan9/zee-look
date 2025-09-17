@@ -5,6 +5,8 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const categoryId = searchParams.get('category');
+    const isFeatured = searchParams.get('featured');
+    const limit = searchParams.get('limit');
 
     let query = supabase
       .from('products')
@@ -15,6 +17,16 @@ export async function GET(request: Request) {
     // Filter by category if specified
     if (categoryId && categoryId !== 'all') {
       query = query.eq('category_id', categoryId);
+    }
+
+    // Filter featured products (for now, we'll use stock_quantity > 10 as featured)
+    if (isFeatured === 'true') {
+      query = query.gt('stock_quantity', 10);
+    }
+
+    // Apply limit if specified
+    if (limit) {
+      query = query.limit(parseInt(limit));
     }
 
     const { data: products, error } = await query;
