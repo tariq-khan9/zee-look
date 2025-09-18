@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
-import Link from 'next/link';
 
 interface Product {
   id: string;
@@ -119,8 +118,8 @@ export default function ProductByCategory({ onAddToCart }: ProductByCategoryProp
         
         {/* Category Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-8">
-          <Link
-            href="/products"
+          <button
+            onClick={() => handleCategoryChange('all')}
             className={`px-6 py-3 rounded-full font-medium transition-all duration-200 font-inter ${
               activeCategory === 'all'
                 ? 'bg-emerald-600 text-white shadow-lg'
@@ -128,12 +127,12 @@ export default function ProductByCategory({ onAddToCart }: ProductByCategoryProp
             }`}
           >
             All Products
-          </Link>
+          </button>
           
           {categories.map((category) => (
-            <Link
+            <button
               key={category.id}
-              href={`/category/${category.slug}`}
+              onClick={() => handleCategoryChange(category.id)}
               className={`px-6 py-3 rounded-full font-medium transition-all duration-200 font-inter ${
                 activeCategory === category.id
                   ? 'bg-emerald-600 text-white shadow-lg'
@@ -141,7 +140,7 @@ export default function ProductByCategory({ onAddToCart }: ProductByCategoryProp
               }`}
             >
               {category.name}
-            </Link>
+            </button>
           ))}
         </div>
 
@@ -169,7 +168,7 @@ export default function ProductByCategory({ onAddToCart }: ProductByCategoryProp
                   href={activeCategory === 'all' ? '/products' : `/category/${categories.find(c => c.id === activeCategory)?.slug}`}
                   className="inline-block px-8 py-4 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition-colors duration-300 font-inter"
                 >
-                  View All Products
+                  View All {activeCategory === 'all' ? 'Products' : categories.find(c => c.id === activeCategory)?.name || 'Products'}
                 </a>
               </div>
             )}

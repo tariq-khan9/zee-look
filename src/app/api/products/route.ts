@@ -6,6 +6,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const categoryId = searchParams.get('category');
     const isFeatured = searchParams.get('featured');
+    const sort = searchParams.get('sort');
     const limit = searchParams.get('limit');
     const page = searchParams.get('page');
     const pageSize = searchParams.get('limit') || '12';
@@ -43,8 +44,14 @@ export async function GET(request: Request) {
       .from('products')
       .select('*')
       .eq('is_active', true)
-      .order('created_at', { ascending: false })
       .range(offset, offset + itemsPerPage - 1);
+
+    // Apply sorting
+    if (sort === 'newest') {
+      query = query.order('created_at', { ascending: false });
+    } else {
+      query = query.order('created_at', { ascending: false }); // Default to newest
+    }
 
     // Filter by category if specified
     if (categoryId && categoryId !== 'all') {

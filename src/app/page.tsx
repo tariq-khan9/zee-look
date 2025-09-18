@@ -1,7 +1,7 @@
 'use client';
 
 import ProductByCategory from '@/components/ProductByCategory';
-import FeaturedProducts from '@/components/FeaturedProducts';
+import NewArrivals from '@/components/NewArrivals';
 
 export default function Home() {
   const handleAddToCart = (productId: string) => {
@@ -11,8 +11,8 @@ export default function Home() {
 
   return (
     <div>
-      {/* Featured Products Section */}
-      <FeaturedProducts 
+      {/* New Arrivals Section */}
+      <NewArrivals 
         onAddToCart={handleAddToCart}
         limit={3}
         showLarge={false}
