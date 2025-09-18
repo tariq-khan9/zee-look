@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import FeaturedProduct from './FeaturedProduct';
+import ProductCard from './ProductCard';
 
 interface Product {
   id: string;
@@ -104,21 +104,21 @@ export default function FeaturedProducts({ onAddToCart, limit = 3, showLarge = f
         {showLarge ? (
           // Single large featured product
           <div className="flex justify-center">
-            <FeaturedProduct
-              product={products[0]}
-              onAddToCart={handleAddToCart}
-              isLarge={true}
-            />
+            <div className="max-w-md">
+              <ProductCard
+                product={products[0]}
+                onAddToCart={handleAddToCart}
+              />
+            </div>
           </div>
         ) : (
-          // Grid of featured products
+          // Grid of featured products - limited to 3 products (1 row)
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product, index) => (
-              <FeaturedProduct
+            {products.slice(0, 3).map((product, index) => (
+              <ProductCard
                 key={product.id}
                 product={product}
                 onAddToCart={handleAddToCart}
-                isLarge={false}
               />
             ))}
           </div>
@@ -126,9 +126,12 @@ export default function FeaturedProducts({ onAddToCart, limit = 3, showLarge = f
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <button className="px-8 py-4 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition-colors duration-300 font-inter">
+          <a 
+            href="/products"
+            className="inline-block px-8 py-4 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition-colors duration-300 font-inter"
+          >
             View All Products
-          </button>
+          </a>
         </div>
       </div>
     </section>

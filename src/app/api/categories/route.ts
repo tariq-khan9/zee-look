@@ -1,8 +1,31 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const slug = searchParams.get('slug');
+
+    // If slug is provided, fetch single category
+    if (slug) {
+      const { data: category, error } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+
+      if (error) {
+        console.error('Error fetching category:', error);
+        return NextResponse.json(
+          { error: 'Category not found' },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({ category });
+    }
+
+    // Otherwise, fetch all categories
     const { data: categories, error } = await supabase
       .from('categories')
       .select('*')
