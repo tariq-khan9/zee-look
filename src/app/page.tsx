@@ -2,6 +2,7 @@
 
 import ProductByCategory from '@/components/ProductByCategory';
 import NewArrivals from '@/components/NewArrivals';
+import Testimonial from '@/components/Testimonial';
 
 export default function Home() {
   const handleAddToCart = (productId: string) => {
@@ -20,6 +21,9 @@ export default function Home() {
       
       {/* All Products by Category */}
       <ProductByCategory onAddToCart={handleAddToCart} />
+      
+      {/* Testimonials Section */}
+      <Testimonial />
     </div>
   );
 }
