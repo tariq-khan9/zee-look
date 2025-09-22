@@ -4,11 +4,12 @@ import { supabase } from '@/lib/supabase';
 export async function GET() {
   try {
     const { data: feedbacks, error } = await supabase
-      .from('user_feedbacks')
+      .from('testimonials')
       .select(`
         id,
         user_name,
         user_email,
+        user_image,
         rating,
         comment,
         created_at,

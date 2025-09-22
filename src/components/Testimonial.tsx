@@ -8,6 +8,7 @@ interface UserFeedback {
   id: string;
   user_name: string;
   user_email: string;
+  user_image?: string;
   rating: number;
   comment: string;
   product_id: string;
@@ -27,6 +28,8 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
 
   // Fetch testimonials from Supabase
   useEffect(() => {
@@ -61,22 +64,50 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
   }, [propTestimonials]);
 
   const handlePrevious = () => {
+    setImageLoading(true);
+    setImageError(false);
     setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
+    setImageLoading(true);
+    setImageError(false);
     setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
   };
 
   const handleProfileClick = (index: number) => {
-    setCurrentIndex(index);
+    if (index !== currentIndex) {
+      setImageLoading(true);
+      setImageError(false);
+      setCurrentIndex(index);
+    }
   };
 
   const currentTestimonial = testimonials[currentIndex];
 
-  // Generate profile image from user name initial if no image available
-  const getProfileImage = (userName: string) => {
+  // Get profile image from Supabase or generate fallback
+  const getProfileImage = (userName: string, userImage?: string) => {
+    // If user has an actual image in Supabase, use it
+    if (userImage && userImage.trim() !== '' && userImage.startsWith('http')) {
+      return userImage;
+    }
+    // Fallback to generated avatar from name
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=10b981&color=fff&size=200`;
+  };
+
+  // Handle image load success
+  const handleImageLoad = () => {
+    setImageLoading(false);
+    setImageError(false);
+  };
+
+  // Handle image load errors
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, userName: string) => {
+    const target = e.target as HTMLImageElement;
+    setImageError(true);
+    setImageLoading(false);
+    // Fallback to generated avatar if image fails to load
+    target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=10b981&color=fff&size=200`;
   };
 
   // Extract quote from comment (first sentence or phrase)
@@ -142,7 +173,7 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
             </button>
 
             {/* Profile Pictures - 5 Profiles with Selected in Middle */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center space-x-3 min-h-[80px]">
               {(() => {
                 const totalProfiles = testimonials.length;
                 if (totalProfiles === 0) return null;
@@ -165,22 +196,35 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
                     <button
                       key={`${testimonial.id}-${profileIndex}`}
                       onClick={() => handleProfileClick(profileIndex)}
-                      className={`relative rounded-xl overflow-hidden transition-all duration-700 ease-out ${
+                      className={`relative rounded-xl overflow-hidden transition-all duration-300 ease-out flex-shrink-0 group ${
                         isSelected
-                          ? 'w-20 h-20 ring-4 ring-green-500 opacity-100'
+                          ? 'w-20 h-20 ring-4 ring-green-500 opacity-100 shadow-lg shadow-green-500/25'
                           : distance === 1
-                          ? 'w-16 h-16 opacity-70 hover:opacity-90'
-                          : 'w-14 h-14 opacity-50 hover:opacity-70'
+                          ? 'w-16 h-16 opacity-70 hover:opacity-90 hover:scale-105 hover:shadow-md'
+                          : 'w-14 h-14 opacity-50 hover:opacity-70 hover:scale-105'
                       }`}
                       aria-label={`View ${testimonial.user_name}'s testimonial`}
+                      style={{
+                        willChange: 'transform, opacity',
+                        backfaceVisibility: 'hidden',
+                        transform: 'translateZ(0)'
+                      }}
                     >
-                      <Image
-                        src={getProfileImage(testimonial.user_name)}
-                        alt={testimonial.user_name}
-                        fill
-                        className="object-cover"
-                        sizes={isSelected ? "80px" : distance === 1 ? "64px" : "56px"}
-                      />
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={getProfileImage(testimonial.user_name, testimonial.user_image)}
+                          alt={testimonial.user_name}
+                          fill
+                          className={`object-cover transition-transform duration-300 ease-out group-hover:scale-110 ${
+                            isSelected ? 'scale-105' : ''
+                          }`}
+                          sizes="80px"
+                          priority={isSelected}
+                          onError={(e) => handleImageError(e, testimonial.user_name)}
+                        />
+                        {/* Hover overlay effect */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out"></div>
+                      </div>
                     </button>
                   );
                 });
@@ -202,40 +246,74 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
 
         {/* Main Testimonial Card */}
         <div className="relative max-w-6xl mx-auto">
-          <div className="relative bg-gray-50 rounded-3xl p-8 md:p-12 overflow-hidden">
+          <div className="relative bg-gray-50 rounded-3xl p-8 md:p-12 overflow-hidden min-h-[400px]">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
               {/* Left Side - User Image */}
               <div className="relative">
-                <div className="relative w-full h-80 md:h-96 rounded-2xl overflow-hidden">
-                  <Image
-                    src={getProfileImage(currentTestimonial.user_name)}
-                    alt={currentTestimonial.user_name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
+                <div className="relative w-full h-80 md:h-96 rounded-2xl overflow-hidden group">
+                  {/* Image Loading Skeleton */}
+                  {imageLoading && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse rounded-2xl z-10">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                    </div>
+                  )}
+                  
+                  {/* Main Image Container */}
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={getProfileImage(currentTestimonial.user_name, currentTestimonial.user_image)}
+                      alt={currentTestimonial.user_name}
+                      fill
+                      className={`object-cover group-hover:scale-105 transition-all duration-500 ease-out ${
+                        imageError ? 'grayscale' : ''
+                      }`}
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      onLoad={handleImageLoad}
+                      onError={(e) => handleImageError(e, currentTestimonial.user_name)}
+                      priority={currentIndex === 0}
+                    />
+                  </div>
+                  
+                  {/* Image Overlay Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out rounded-2xl z-5"></div>
+                  
+                  {/* Loading Spinner */}
+                  {imageLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                      <div className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Right Side - Testimonial Content */}
               <div className="space-y-6">
-           
+                {/* Quote Icon */}
+                <div className="flex justify-start">
+                  <svg 
+                    className="text-green-400 w-20 h-20 opacity-40" 
+                    fill="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
+                  </svg>
+                </div>
 
                 {/* Testimonial Text */}
-                <p className="text-slate-600 font-inter leading-relaxed text-xl md:text-2xl">
+                <p className="text-gray-500 font-story-script font-semibold leading-relaxed text-2xl md:text-4xl text-left">
                   {currentTestimonial.comment}
                 </p>
 
                 {/* Customer Name */}
                 <div className="pt-4">
-                  <h4 className="font-semibold text-slate-900 font-inter text-xl">
+                  <h4 className="font-semibold text-slate-900 font-inter text-xl transition-opacity duration-500 ease-out">
                     {currentTestimonial.user_name}
                   </h4>
-                  <div className="flex items-center mt-2">
+                  <div className="flex items-center mt-2 transition-opacity duration-500 ease-out">
                     {Array.from({ length: 5 }, (_, index) => (
                       <svg
                         key={index}
-                        className={`w-5 h-5 ${
+                        className={`w-5 h-5 transition-colors duration-500 ease-out ${
                           index < currentTestimonial.rating ? 'text-yellow-400' : 'text-gray-300'
                         }`}
                         fill="currentColor"
@@ -246,7 +324,6 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
                     ))}
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
