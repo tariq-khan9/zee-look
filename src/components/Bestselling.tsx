@@ -127,107 +127,50 @@ export default function Bestselling({ onAddToCart, limit = 10 }: BestsellingProp
           </p>
         </div>
 
-        {/* Carousel of bestselling products - 5 cards layout */}
+        {/* Carousel of bestselling products - 4 cards layout */}
         <div className="relative overflow-hidden">
           <div 
             ref={carouselRef}
             className="flex transition-transform duration-500 ease-in-out"
             style={{
-              transform: `translateX(calc(-${currentIndex * 20}%))`
+              transform: `translateX(calc(-${currentIndex * 25}%))`
             }}
           >
             {/* Duplicate last 2 products at the beginning for seamless loop */}
-            {products.slice(-2).map((product, index) => {
-              // These are at positions 0 and 1 in the carousel
-              const carouselPosition = index;
-              // Check if this position is in the visible 5-card window
-              const isVisible = carouselPosition >= currentIndex && carouselPosition < currentIndex + 5;
-              // If visible, check if it's first (position 0) or last (position 4) of the 5 visible cards
-              const visiblePosition = carouselPosition - currentIndex;
-              const shouldBlur = isVisible && (visiblePosition === 0 || visiblePosition === 4);
-              
-              return (
-                <div key={`prev-${product.id}`} className="flex-shrink-0 w-1/5 px-2">
-                  {shouldBlur ? (
-                    <div className="blur-sm">
-                      <ProductCard
-                        product={product}
-                        onAddToCart={handleAddToCart}
-                      />
-                    </div>
-                  ) : (
-                    <ProductCard
-                      product={product}
-                      onAddToCart={handleAddToCart}
-                    />
-                  )}
-                </div>
-              );
-            })}
+            {products.slice(-2).map((product, index) => (
+              <div key={`prev-${product.id}`} className="flex-shrink-0 w-1/4 px-2">
+                <ProductCard
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                />
+              </div>
+            ))}
             
             {/* Main products */}
-            {products.map((product, index) => {
-              // These are at positions 2, 3, 4, 5, 6, ... in the carousel
-              const carouselPosition = index + 2;
-              // Check if this position is in the visible 5-card window
-              const isVisible = carouselPosition >= currentIndex && carouselPosition < currentIndex + 5;
-              // If visible, check if it's first (position 0) or last (position 4) of the 5 visible cards
-              const visiblePosition = carouselPosition - currentIndex;
-              const shouldBlur = isVisible && (visiblePosition === 0 || visiblePosition === 4);
-              
-              return (
-                <div key={product.id} className="flex-shrink-0 w-1/5 px-2">
-                  {shouldBlur ? (
-                    <div className="blur-sm">
-                      <ProductCard
-                        product={product}
-                        onAddToCart={handleAddToCart}
-                      />
-                    </div>
-                  ) : (
-                    <ProductCard
-                      product={product}
-                      onAddToCart={handleAddToCart}
-                    />
-                  )}
-                </div>
-              );
-            })}
+            {products.map((product, index) => (
+              <div key={product.id} className="flex-shrink-0 w-1/4 px-2">
+                <ProductCard
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                />
+              </div>
+            ))}
             
             {/* Duplicate first 2 products at the end for seamless loop */}
-            {products.slice(0, 2).map((product, index) => {
-              // These are at positions (products.length + 2) and (products.length + 3) in the carousel
-              const carouselPosition = products.length + 2 + index;
-              // Check if this position is in the visible 5-card window
-              const isVisible = carouselPosition >= currentIndex && carouselPosition < currentIndex + 5;
-              // If visible, check if it's first (position 0) or last (position 4) of the 5 visible cards
-              const visiblePosition = carouselPosition - currentIndex;
-              const shouldBlur = isVisible && (visiblePosition === 0 || visiblePosition === 4);
-              
-              return (
-                <div key={`next-${product.id}`} className="flex-shrink-0 w-1/5 px-2">
-                  {shouldBlur ? (
-                    <div className="blur-sm">
-                      <ProductCard
-                        product={product}
-                        onAddToCart={handleAddToCart}
-                      />
-                    </div>
-                  ) : (
-                    <ProductCard
-                      product={product}
-                      onAddToCart={handleAddToCart}
-                    />
-                  )}
-                </div>
-              );
-            })}
+            {products.slice(0, 2).map((product, index) => (
+              <div key={`next-${product.id}`} className="flex-shrink-0 w-1/4 px-2">
+                <ProductCard
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                />
+              </div>
+            ))}
           </div>
           
           {/* Navigation buttons */}
           <button
             onClick={goToPrevious}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-slate-800 p-3 rounded-full shadow-lg transition-all duration-200 z-10 hover:scale-110"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-slate-800 p-3 rounded-full shadow-lg transition-all duration-200 z-10 hover:scale-110 border-2 border-emerald-500"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -236,7 +179,7 @@ export default function Bestselling({ onAddToCart, limit = 10 }: BestsellingProp
           
           <button
             onClick={goToNext}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-slate-800 p-3 rounded-full shadow-lg transition-all duration-200 z-10 hover:scale-110"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-slate-800 p-3 rounded-full shadow-lg transition-all duration-200 z-10 hover:scale-110 border-2 border-emerald-500"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
