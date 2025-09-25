@@ -2,6 +2,7 @@
 
 import ProductByCategory from '@/components/ProductByCategory';
 import NewArrivals from '@/components/NewArrivals';
+import Bestselling from '@/components/Bestselling';
 import Testimonial from '@/components/Testimonial';
 
 export default function Home() {
@@ -17,6 +18,12 @@ export default function Home() {
         onAddToCart={handleAddToCart}
         limit={3}
         showLarge={false}
+      />
+      
+      {/* Bestselling Products Section */}
+      <Bestselling 
+        onAddToCart={handleAddToCart}
+        limit={10}
       />
       
       {/* All Products by Category */}

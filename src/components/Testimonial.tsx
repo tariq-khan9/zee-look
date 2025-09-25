@@ -124,11 +124,11 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
     <>
      
       <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-2.5 sm:px-4 md:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
          
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 font-inter">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 font-inter">
             What Our Customers Say
           </h2>
         </div>
@@ -159,21 +159,21 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
           <>
 
         {/* Profile Selection - Static 5 Profiles */}
-        <div className="flex justify-center mb-12">
-          <div className="flex items-center space-x-4">
+        <div className="flex justify-center mb-8 sm:mb-12">
+          <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4">
             {/* Previous Arrow */}
             <button
               onClick={handlePrevious}
-              className="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors duration-500 ease-out"
+              className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors duration-500 ease-out"
               aria-label="Previous testimonial"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 xs:w-5 xs:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
 
             {/* Profile Pictures - 5 Profiles with Selected in Middle */}
-            <div className="flex items-center justify-center space-x-3 min-h-[80px]">
+            <div className="flex items-center justify-center space-x-1 xs:space-x-2 sm:space-x-3 min-h-[60px] xs:min-h-[70px] sm:min-h-[80px]">
               {(() => {
                 const totalProfiles = testimonials.length;
                 if (totalProfiles === 0) return null;
@@ -198,10 +198,10 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
                       onClick={() => handleProfileClick(profileIndex)}
                       className={`relative rounded-xl overflow-hidden transition-all duration-300 ease-out flex-shrink-0 group ${
                         isSelected
-                          ? 'w-20 h-20 ring-4 ring-green-500 opacity-100 shadow-lg shadow-green-500/25'
+                          ? 'w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 ring-2 xs:ring-3 sm:ring-4 ring-green-500 opacity-100 shadow-lg shadow-green-500/25'
                           : distance === 1
-                          ? 'w-16 h-16 opacity-70 hover:opacity-90 hover:scale-105 hover:shadow-md'
-                          : 'w-14 h-14 opacity-50 hover:opacity-70 hover:scale-105'
+                          ? 'w-10 h-10 xs:w-12 xs:h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 opacity-70 hover:opacity-90 hover:scale-105 hover:shadow-md'
+                          : 'w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 opacity-50 hover:opacity-70 hover:scale-105'
                       }`}
                       aria-label={`View ${testimonial.user_name}'s testimonial`}
                       style={{
@@ -234,10 +234,10 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
             {/* Next Arrow */}
             <button
               onClick={handleNext}
-              className="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors duration-500 ease-out"
+              className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors duration-500 ease-out"
               aria-label="Next testimonial"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 xs:w-5 xs:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -246,11 +246,11 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
 
         {/* Main Testimonial Card */}
         <div className="relative max-w-6xl mx-auto">
-          <div className="relative bg-gray-50 rounded-3xl p-8 md:p-12 overflow-hidden min-h-[400px]">
-            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className="relative bg-gray-50 rounded-2xl xs:rounded-3xl p-4 xs:p-6 sm:p-8 md:p-12 overflow-hidden min-h-[300px] xs:min-h-[350px] sm:min-h-[400px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-6 sm:gap-8 md:gap-12 items-center">
               {/* Left Side - User Image */}
-              <div className="relative">
-                <div className="relative w-full h-80 md:h-96 rounded-2xl overflow-hidden group">
+              <div className="relative order-2 md:order-1">
+                <div className="relative w-full h-48 xs:h-56 sm:h-64 md:h-80 lg:h-96 rounded-xl xs:rounded-2xl overflow-hidden group">
                   {/* Image Loading Skeleton */}
                   {imageLoading && (
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse rounded-2xl z-10">
@@ -287,11 +287,11 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
               </div>
 
               {/* Right Side - Testimonial Content */}
-              <div className="space-y-6">
+              <div className="space-y-4 xs:space-y-6 order-1 md:order-2">
                 {/* Quote Icon */}
                 <div className="flex justify-start">
                   <svg 
-                    className="text-green-400 w-20 h-20 opacity-40" 
+                    className="text-green-400 w-12 h-12 xs:w-16 xs:h-16 sm:w-20 sm:h-20 opacity-40" 
                     fill="currentColor" 
                     viewBox="0 0 24 24"
                   >
@@ -300,20 +300,20 @@ export default function Testimonial({ testimonials: propTestimonials }: Testimon
                 </div>
 
                 {/* Testimonial Text */}
-                <p className="text-gray-500 font-story-script font-semibold leading-relaxed text-2xl md:text-4xl text-left">
+                <p className="text-gray-500 font-story-script font-semibold leading-relaxed text-lg xs:text-xl sm:text-2xl md:text-4xl text-left">
                   {currentTestimonial.comment}
                 </p>
 
                 {/* Customer Name */}
-                <div className="pt-4">
-                  <h4 className="font-semibold text-slate-900 font-inter text-xl transition-opacity duration-500 ease-out">
+                <div className="pt-2 xs:pt-4">
+                  <h4 className="font-semibold text-slate-900 font-inter text-base xs:text-lg sm:text-xl transition-opacity duration-500 ease-out">
                     {currentTestimonial.user_name}
                   </h4>
-                  <div className="flex items-center mt-2 transition-opacity duration-500 ease-out">
+                  <div className="flex items-center mt-1 xs:mt-2 transition-opacity duration-500 ease-out">
                     {Array.from({ length: 5 }, (_, index) => (
                       <svg
                         key={index}
-                        className={`w-5 h-5 transition-colors duration-500 ease-out ${
+                        className={`w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5 transition-colors duration-500 ease-out ${
                           index < currentTestimonial.rating ? 'text-yellow-400' : 'text-gray-300'
                         }`}
                         fill="currentColor"
