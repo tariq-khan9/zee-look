@@ -202,15 +202,6 @@ export default function Bestselling({ onAddToCart, limit = 10 }: BestsellingProp
           </div>
         </div>
 
-        {/* View All Button */}
-        <div className="text-center mt-12">
-          <a 
-            href="/products"
-            className="inline-block px-8 py-4 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors duration-300 font-inter"
-          >
-            View All Products
-          </a>
-        </div>
       </div>
     </section>
   );

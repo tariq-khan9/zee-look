@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import ProductCard from './ProductCard';
+import { useRouter } from 'next/navigation';
+import NewArrivalCard from './NewArrivalCard';
 
 interface Product {
   id: string;
@@ -26,6 +27,7 @@ export default function NewArrivals({ onAddToCart, limit = 3, showLarge = false 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     fetchNewArrivals();
@@ -50,6 +52,20 @@ export default function NewArrivals({ onAddToCart, limit = 3, showLarge = false 
   const handleAddToCart = (productId: string) => {
     console.log('Adding new arrival to cart:', productId);
     onAddToCart?.(productId);
+  };
+
+  const handleViewAll = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('View All button clicked, navigating to /new-arrivals');
+    
+    // Try router first, fallback to window.location
+    if (router && typeof router.push === 'function') {
+      router.push('/new-arrivals');
+    } else {
+      console.log('Router not available, using window.location');
+      window.location.href = '/new-arrivals';
+    }
   };
 
   if (loading) {
@@ -90,13 +106,17 @@ export default function NewArrivals({ onAddToCart, limit = 3, showLarge = false 
   }
 
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
+    <section className="py-20 bg-gradient-to-br from-emerald-50 via-purple-50 to-teal-50 relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,92,246,0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(20,184,166,0.05),transparent_70%)]" />
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-slate-800 mb-4 font-inter">
+        <div className="text-center mb-16 relative z-10">
+          <h2 className="text-5xl font-black text-slate-800 mb-6 font-inter">
             New Arrivals
           </h2>
-          <p className="text-xl text-slate-600 font-inter max-w-2xl mx-auto">
+          <p className="text-xl text-slate-600 font-inter max-w-2xl mx-auto leading-relaxed">
             Discover our latest collection of fresh products just added to our store
           </p>
         </div>
@@ -105,7 +125,7 @@ export default function NewArrivals({ onAddToCart, limit = 3, showLarge = false 
           // Single large new arrival
           <div className="flex justify-center">
             <div className="max-w-md">
-              <ProductCard
+              <NewArrivalCard
                 product={products[0]}
                 onAddToCart={handleAddToCart}
               />
@@ -115,7 +135,7 @@ export default function NewArrivals({ onAddToCart, limit = 3, showLarge = false 
           // Grid of new arrivals - limited to 3 products (1 row)
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.slice(0, 3).map((product, index) => (
-              <ProductCard
+              <NewArrivalCard
                 key={product.id}
                 product={product}
                 onAddToCart={handleAddToCart}
@@ -125,13 +145,16 @@ export default function NewArrivals({ onAddToCart, limit = 3, showLarge = false 
         )}
 
         {/* View All Button */}
-        <div className="text-center mt-12">
-          <a 
-            href="/new-arrivals"
-            className="inline-block px-8 py-4 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition-colors duration-300 font-inter"
+        <div className="text-center mt-12 relative z-20">
+          <button 
+            onClick={() => {
+              console.log('View All New Arrivals clicked!');
+              window.location.href = '/new-arrivals';
+            }}
+            className="px-8 py-4 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 active:bg-slate-700 transition-colors duration-300 font-inter cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
           >
             View All New Arrivals
-          </a>
+          </button>
         </div>
       </div>
     </section>

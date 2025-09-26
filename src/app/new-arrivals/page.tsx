@@ -25,30 +25,22 @@ export default function NewArrivalsPage({ onAddToCart }: NewArrivalsPageProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const productsPerPage = 12;
 
   useEffect(() => {
     fetchNewArrivals();
   }, []);
 
-  useEffect(() => {
-    fetchNewArrivals();
-  }, [currentPage]);
-
   const fetchNewArrivals = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/products?sort=newest&page=${currentPage}&limit=${productsPerPage}`
+        `/api/products?sort=newest&limit=12`
       );
       if (!response.ok) {
         throw new Error('Failed to fetch new arrivals');
       }
       const data = await response.json();
       setProducts(data.products);
-      setTotalPages(Math.ceil(data.total / productsPerPage));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -56,10 +48,6 @@ export default function NewArrivalsPage({ onAddToCart }: NewArrivalsPageProps) {
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const handleAddToCart = (productId: string) => {
     console.log('Adding new arrival to cart:', productId);
@@ -105,11 +93,7 @@ export default function NewArrivalsPage({ onAddToCart }: NewArrivalsPageProps) {
 
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full mb-6">
-            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" />
-            </svg>
-          </div>
+          
           <h1 className="text-4xl font-bold text-slate-800 mb-4 font-inter">
             New Arrivals
           </h1>
@@ -122,11 +106,7 @@ export default function NewArrivalsPage({ onAddToCart }: NewArrivalsPageProps) {
         {/* Products Grid */}
         {products.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-              </svg>
-            </div>
+           
             <p className="text-slate-600 text-lg font-inter">No new arrivals available at the moment.</p>
             <p className="text-slate-500 text-sm font-inter mt-2">Check back soon for our latest additions!</p>
           </div>
@@ -142,42 +122,6 @@ export default function NewArrivalsPage({ onAddToCart }: NewArrivalsPageProps) {
               ))}
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-12 space-x-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-inter"
-                >
-                  Previous
-                </button>
-                
-                <div className="flex space-x-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => handlePageChange(page)}
-                      className={`px-3 py-2 rounded-lg font-medium font-inter ${
-                        currentPage === page
-                          ? 'bg-slate-800 text-white'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-                
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-inter"
-                >
-                  Next
-                </button>
-              </div>
-            )}
           </>
         )}
 
